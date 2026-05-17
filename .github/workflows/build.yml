@@ -7,38 +7,20 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - name: Ubuntu Latest GCC
-            os: ubuntu-latest
-            build_type: Release
-            generator: Ninja
-            cc: gcc
-            cxx: g++
-
-          - name: Windows Latest MSVC
-            os: windows-latest
-            build_type: Release
-            generator: Ninja
-            cc: cl
-            cxx: cl
+  ubuntu:
+    name: Ubuntu Latest GCC
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies (Ubuntu)
-        if: runner.os == 'Linux'
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             ninja-build \
+            build-essential \
             libvulkan-dev \
             vulkan-tools \
             glslang-tools \
@@ -50,12 +32,25 @@ jobs:
             libxcursor-dev \
             libxi-dev
 
-      - name: Install dependencies (Windows)
-        if: runner.os == 'Windows'
-        run: choco install ninja vulkan-sdk -y
-
       - name: Configure CMake
-        run: cmake -S "${{ github.workspace }}" -B "${{ github.workspace }}/build" -G "${{ matrix.config.generator }}" -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+        run: cmake -S "${{ github.workspace }}" -B "${{ github.workspace }}/build" -G Ninja -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build "${{ github.workspace }}/build" --config ${{ matrix.config.build_type }} --parallel
+        run: cmake --build "${{ github.workspace }}/build" --parallel
+
+  windows:
+    name: Windows Latest MSVC
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Vulkan SDK
+        run: choco install vulkan-sdk -y
+
+      - name: Configure CMake
+        run: cmake -S "${{ github.workspace }}" -B "${{ github.workspace }}/build" -G "Visual Studio 17 2022" -A x64
+
+      - name: Build
+        run: cmake --build "${{ github.workspace }}/build" --config Release --parallel
