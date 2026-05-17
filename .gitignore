@@ -1,0 +1,880 @@
+# =============================================================================
+# Proton G .gitignore
+# =============================================================================
+#
+# Stack:
+# - C++20
+# - CMake
+# - Ninja / MSVC / Visual Studio toolchain
+# - CLion / JetBrains IDEs
+# - Vulkan SDK
+# - GLFW
+# - Luau
+# - stb_image
+# - miniaudio
+# - sandbox runtime assets
+#
+# Goals:
+# - Keep source code, scripts, shader source, docs, and vendored source.
+# - Ignore build outputs, IDE state, logs, caches, binaries, generated media,
+#   local machine config, and giant asset dumps.
+#
+# =============================================================================
+
+
+
+# =============================================================================
+# Build Directories
+# =============================================================================
+
+cmake-build-*/
+build/
+Build/
+BUILD/
+out/
+Out/
+OUT/
+bin/
+Bin/
+BIN/
+obj/
+Obj/
+OBJ/
+lib/
+Lib/
+LIB/
+target/
+
+_generated/
+generated/
+Generated/
+
+.cache/
+.tmp/
+temp/
+Temp/
+tmp/
+Tmp/
+
+
+
+# =============================================================================
+# CMake Generated Files
+# =============================================================================
+
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+DartConfiguration.tcl
+
+Makefile
+compile_commands.json
+compile_flags.txt
+
+CMakeUserPresets.json
+*.cmake.user
+*.cmake.tmp
+
+Testing/
+CTestCostData.txt
+
+
+
+# =============================================================================
+# Ninja Build Files
+# =============================================================================
+
+.ninja_deps
+.ninja_log
+build.ninja
+rules.ninja
+
+
+
+# =============================================================================
+# MSVC / Visual Studio / Windows Native Build Outputs
+# =============================================================================
+
+*.exe
+*.dll
+*.lib
+*.exp
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.ipdb
+*.iobj
+*.pch
+*.res
+*.tlog
+*.lastbuildstate
+*.recipe
+
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.vcxproj.FileListAbsolute.txt
+
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.VC.opendb
+
+Debug/
+Release/
+RelWithDebInfo/
+MinSizeRel/
+x64/
+x86/
+Win32/
+ARM64/
+
+.vs/
+
+
+
+# =============================================================================
+# General Native Build Outputs
+# =============================================================================
+
+*.o
+*.a
+*.so
+*.dylib
+*.dSYM/
+*.dSYM.zip
+
+*.gcno
+*.gcda
+*.gcov
+*.profraw
+*.profdata
+
+*.map
+*.sym
+*.dbg
+
+
+
+# =============================================================================
+# Executable / Packaged App Outputs
+# =============================================================================
+
+*.msi
+*.msix
+*.appx
+*.appxbundle
+
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+*.deb
+*.rpm
+*.pkg
+*.dmg
+
+release/
+releases/
+installer/
+installers/
+packages/
+package/
+artifacts/
+Artifacts/
+
+
+
+# =============================================================================
+# JetBrains IDEs
+# =============================================================================
+
+.idea/
+.idea_modules/
+*.iws
+*.iml
+*.ipr
+
+.clion/
+.intellij/
+.webstorm/
+.pycharm/
+
+out/production/
+out/test/
+
+
+
+# =============================================================================
+# VS Code
+# =============================================================================
+
+.vscode/
+*.code-workspace
+.history/
+
+
+
+# =============================================================================
+# Visual Studio
+# =============================================================================
+
+*.sln
+*.suo
+*.user
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln.docstates
+
+
+
+# =============================================================================
+# Windows / OS Files
+# =============================================================================
+
+Thumbs.db
+ehthumbs.db
+desktop.ini
+[Dd]esktop.ini
+$RECYCLE.BIN/
+System Volume Information/
+
+*.lnk
+Icon?
+._*
+
+
+
+# =============================================================================
+# macOS Files
+# =============================================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+*.icloud
+
+
+
+# =============================================================================
+# Linux Files
+# =============================================================================
+
+*~
+.directory
+.Trash-*
+.nfs*
+
+
+
+# =============================================================================
+# Logs / Crash Dumps / Diagnostics
+# =============================================================================
+
+*.log
+*.log.*
+logs/
+Logs/
+
+latest.log
+debug.log
+error.log
+trace.log
+
+*.dmp
+*.dump
+*.mdmp
+*.crash
+*.stackdump
+
+crash/
+crashes/
+dumps/
+Dumps/
+diagnostics/
+diagnostic-reports/
+
+
+
+# =============================================================================
+# Temporary / Backup / Swap Files
+# =============================================================================
+
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+
+*.swp
+*.swo
+*.swn
+*.sublime-workspace
+
+*.pid
+*.seed
+*.lock.tmp
+
+
+
+# =============================================================================
+# Environment / Secrets / Local Machine Config
+# =============================================================================
+
+.env
+.env.*
+!.env.example
+
+local_settings.json
+settings.local.json
+config.local.json
+secrets.json
+secrets.local.json
+
+*.key
+*.pem
+*.pfx
+*.cer
+*.crt
+
+credentials.json
+token.json
+
+.vault/
+.secrets/
+
+
+
+# =============================================================================
+# Vulkan Shader Build Outputs
+# =============================================================================
+#
+# Keep shader source files.
+# Ignore compiled SPIR-V by default because it can be rebuilt.
+#
+
+*.spv
+*.spirv
+
+*.vert.spv
+*.frag.spv
+*.comp.spv
+*.geom.spv
+*.tesc.spv
+*.tese.spv
+
+sandbox/shaders/compiled/
+sandbox/shaders/generated/
+shaders/compiled/
+shaders/generated/
+
+
+
+# =============================================================================
+# Vulkan SDK / Graphics Debugger Generated Files
+# =============================================================================
+
+vk_layer_settings.txt
+vkconfig_override.json
+
+RenderDoc/
+renderdoc/
+*.rdc
+
+Nsight/
+nsight/
+*.nsight-gfx
+
+*.gfxreconstruct
+*.vktrace
+
+
+
+# =============================================================================
+# Luau / Lua / Scripting Generated Files
+# =============================================================================
+
+*.luau.bytecode
+*.lua.bytecode
+*.luau.cache
+*.lua.cache
+
+.luau-cache/
+luau-cache/
+luau-analyze-cache/
+
+*.luau.tmp
+*.lua.tmp
+
+# Keep Luau type definition files.
+!*.d.luau
+
+
+
+# =============================================================================
+# Sandbox Runtime Files
+# =============================================================================
+#
+# Keep sandbox scripts and small intentional assets.
+# Ignore runtime output, generated files, captures, temp data, and caches.
+#
+
+sandbox/runtime/
+sandbox/cache/
+sandbox/temp/
+sandbox/tmp/
+sandbox/output/
+sandbox/generated/
+sandbox/recordings/
+sandbox/captures/
+sandbox/screenshots/
+
+sandbox/**/*.tmp
+sandbox/**/*.temp
+sandbox/**/*.cache
+sandbox/**/*.log
+
+
+
+# =============================================================================
+# Large / Generated Media Assets
+# =============================================================================
+#
+# Engine repos can explode fast.
+# Keep tiny intentional assets.
+# Ignore large dumps, raw captures, generated frame folders, and source media.
+#
+
+sandbox/assets/**/frames/
+sandbox/assets/**/video/
+sandbox/assets/**/source/
+sandbox/assets/**/generated/
+sandbox/assets/**/cache/
+sandbox/assets/**/temp/
+sandbox/assets/**/tmp/
+sandbox/assets/**/output/
+
+assets/generated/
+assets/cache/
+assets/temp/
+assets/tmp/
+assets/output/
+
+# Large raw video files.
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.wmv
+
+# Audio files are ignored by default because licensing/size can get cursed.
+# If you want to commit a tiny owned placeholder sound, force-add it or add
+# a narrower exception below.
+*.wav
+*.mp3
+*.ogg
+*.flac
+
+# Large audio project/session files.
+*.flp
+*.als
+*.aup3
+
+# Image project/source files.
+*.psd
+*.kra
+*.xcf
+
+# Keep docs/license notes inside asset folders.
+!assets/**/*.md
+!assets/**/README.md
+!assets/**/LICENSE.md
+!sandbox/assets/**/*.md
+!sandbox/assets/**/README.md
+!sandbox/assets/**/LICENSE.md
+
+# Optional intentional sample media folder.
+!sandbox/assets/**/samples/
+!sandbox/assets/**/samples/**
+
+
+
+# =============================================================================
+# Screenshots / Captures
+# =============================================================================
+
+screenshots/
+Screenshots/
+captures/
+Captures/
+recordings/
+Recordings/
+
+*.bmp
+*.tga
+
+captures/**/*.png
+captures/**/*.jpg
+screenshots/**/*.png
+screenshots/**/*.jpg
+
+
+
+# =============================================================================
+# Third Party Dependencies
+# =============================================================================
+#
+# Keep vendored source dependencies:
+# - Luau source
+# - stb headers
+# - miniaudio header
+#
+# Ignore build outputs inside third_party.
+#
+
+third_party/**/build/
+third_party/**/out/
+third_party/**/cmake-build-*/
+third_party/**/CMakeFiles/
+third_party/**/CMakeCache.txt
+
+third_party/**/*.lib
+third_party/**/*.dll
+third_party/**/*.exe
+third_party/**/*.pdb
+third_party/**/*.obj
+third_party/**/*.o
+third_party/**/*.a
+third_party/**/*.so
+third_party/**/*.dylib
+
+# Keep actual vendored source/docs/licenses.
+!third_party/**/*.h
+!third_party/**/*.hpp
+!third_party/**/*.c
+!third_party/**/*.cpp
+!third_party/**/*.cc
+!third_party/**/*.cxx
+!third_party/**/*.cmake
+!third_party/**/CMakeLists.txt
+!third_party/**/*.md
+!third_party/**/*.txt
+!third_party/**/LICENSE*
+!third_party/**/COPYING*
+
+
+
+# =============================================================================
+# Dependency Manager / FetchContent Outputs
+# =============================================================================
+
+.gitmodules.lock
+
+_deps/
+FetchContent_*/
+*/_deps/
+
+vcpkg_installed/
+vcpkg-bootstrap.log
+vcpkg-manifest-install.log
+
+conanbuildinfo.*
+conaninfo.txt
+conan.lock
+.conan/
+Conan/
+
+
+
+# =============================================================================
+# Python Helper Scripts / Tooling
+# =============================================================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+.venv/
+venv/
+env/
+ENV/
+
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+*.egg-info/
+
+
+
+# =============================================================================
+# Node / Frontend Tooling
+# =============================================================================
+#
+# For future editor/tools/web UI experiments.
+#
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+dist/
+.next/
+.nuxt/
+.svelte-kit/
+.vite/
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+
+package-lock.json.tmp
+
+
+
+# =============================================================================
+# Java / Gradle Tooling
+# =============================================================================
+#
+# For future Moonlight / Luau IDE tools if they live near this repo.
+#
+
+.gradle/
+gradle-app.setting
+
+*.class
+*.jar
+*.war
+*.ear
+
+hs_err_pid*
+replay_pid*
+
+jlink-image/
+runtime/
+runtime-image/
+
+
+
+# =============================================================================
+# C# / .NET Tooling
+# =============================================================================
+
+[Bb]in/
+[Oo]bj/
+
+*.rsuser
+TestResults/
+*.trx
+
+.nuget/
+packages/
+
+project.assets.json
+project.nuget.cache
+
+
+
+# =============================================================================
+# Rust / Cargo Tooling
+# =============================================================================
+#
+# If Tauri/tools sneak into the repo later.
+#
+
+Cargo.lock
+target/
+
+
+
+# =============================================================================
+# Flutter / Dart Tooling
+# =============================================================================
+
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+
+build/
+ios/Flutter/.last_build_id
+
+.flutter/
+.metadata
+
+
+
+# =============================================================================
+# Android / Mobile Tooling
+# =============================================================================
+
+local.properties
+
+*.apk
+*.aab
+*.ap_
+*.dex
+
+.externalNativeBuild/
+.cxx/
+
+
+
+# =============================================================================
+# Generated Documentation
+# =============================================================================
+
+docs/generated/
+docs/build/
+docs/site/
+
+doxygen/
+Doxygen/
+html/
+latex/
+
+*.chm
+
+
+
+# =============================================================================
+# Profiling / Benchmarking Outputs
+# =============================================================================
+
+profiles/
+profiling/
+benchmarks/output/
+benchmark-results/
+
+*.trace
+*.etl
+*.jsonl
+*.prof
+*.profraw
+*.profdata
+
+Tracy/
+tracy/
+*.tracy
+
+
+
+# =============================================================================
+# Generated Project Files
+# =============================================================================
+
+*.ncb
+*.aps
+*.plg
+*.opt
+*.clw
+
+*.layout
+*.depend
+
+*.cbp
+*.workspace
+
+
+
+# =============================================================================
+# Local Testing Files
+# =============================================================================
+
+test_output/
+test-results/
+tests/output/
+tests/generated/
+
+coverage/
+coverage.xml
+
+*.testlog
+
+
+
+# =============================================================================
+# Proton G Specific Local Files
+# =============================================================================
+
+ProtonG.exe
+ProtonG.pdb
+ProtonG.ilk
+ProtonG.lib
+ProtonG.exp
+
+proton_local.json
+proton_settings.local.json
+proton_runtime.local.json
+
+engine_cache/
+shader_cache/
+texture_cache/
+audio_cache/
+runtime_cache/
+asset_cache/
+
+
+
+# =============================================================================
+# Keep Important Source Folders / Files
+# =============================================================================
+#
+# Git does not track empty folders. Use .gitkeep files when needed.
+#
+
+!.gitkeep
+
+!CMakeLists.txt
+!README.md
+!LICENSE
+!LICENSE.md
+
+!src/
+!src/**/*.hpp
+!src/**/*.h
+!src/**/*.cpp
+!src/**/*.c
+
+!include/
+!include/**/*.hpp
+!include/**/*.h
+
+!sandbox/
+!sandbox/scripts/
+!sandbox/scripts/**/*.luau
+!sandbox/scripts/**/*.d.luau
+
+!sandbox/shaders/
+!sandbox/shaders/**/*.vert
+!sandbox/shaders/**/*.frag
+!sandbox/shaders/**/*.comp
+!sandbox/shaders/**/*.geom
+!sandbox/shaders/**/*.tesc
+!sandbox/shaders/**/*.tese
+
+!third_party/
