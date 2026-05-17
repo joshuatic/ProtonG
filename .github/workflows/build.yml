@@ -10,42 +10,52 @@ jobs:
   build:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
+
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {
-              name: "Ubuntu Latest GCC",
-              os: ubuntu-latest,
-              build_type: "Release",
-              cc: "gcc",
-              cxx: "g++"
-            }
-          - {
-              name: "Windows Latest MSVC",
-              os: windows-latest,
-              build_type: "Release",
-              cc: "cl",
-              cxx: "cl"
-            }
+          - name: Ubuntu Latest GCC
+            os: ubuntu-latest
+            build_type: Release
+            generator: Ninja
+            cc: gcc
+            cxx: g++
+
+          - name: Windows Latest MSVC
+            os: windows-latest
+            build_type: Release
+            generator: Ninja
+            cc: cl
+            cxx: cl
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install Dependencies (Ubuntu)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libwayland-dev libxkbcommon-dev xorg-dev libcurl4-openssl-dev
+      - name: Install dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ninja-build \
+            libvulkan-dev \
+            vulkan-tools \
+            glslang-tools \
+            libwayland-dev \
+            libxkbcommon-dev \
+            xorg-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev
 
-    - name: Configure CMake
-      run: |
-        cmake -B ${{github.workspace}}/build \
-          -DCMAKE_BUILD_TYPE=${{matrix.config.build_type}} \
-          -DCMAKE_C_COMPILER=${{matrix.config.cc}} \
-          -DCMAKE_CXX_COMPILER=${{matrix.config.cxx}}
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ninja vulkan-sdk -y
 
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{matrix.config.build_type}}
+      - name: Configure CMake
+        run: cmake -S "${{ github.workspace }}" -B "${{ github.workspace }}/build" -G "${{ matrix.config.generator }}" -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+
+      - name: Build
+        run: cmake --build "${{ github.workspace }}/build" --config ${{ matrix.config.build_type }} --parallel
