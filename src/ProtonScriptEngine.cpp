@@ -15,8 +15,6 @@
 #include <utility>
 #include <algorithm>
 #include <vector>
-// Extra safety header
-#include <cstdint>
 
 namespace Proton {
     static ScriptEngine *GetScriptEngine(lua_State *state) {

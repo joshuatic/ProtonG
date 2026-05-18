@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <string>
+#include <filesystem>
 #include <vector>
 
 struct lua_State;

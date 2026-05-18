@@ -75,7 +75,6 @@ jobs:
           "$vulkanSdk\Bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
           Write-Host "Using Vulkan SDK: $vulkanSdk"
-          Write-Host "VULKAN_SDK=$vulkanSdk"
 
       - name: Verify Vulkan SDK
         shell: pwsh
@@ -104,3 +103,45 @@ jobs:
       - name: Build
         shell: pwsh
         run: cmake --build "${{ github.workspace }}/build" --config Release --parallel
+
+  macos:
+    name: macOS Latest Clang
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          brew update
+          brew install \
+            cmake \
+            ninja \
+            vulkan-loader \
+            vulkan-headers \
+            vulkan-tools \
+            glslang \
+            molten-vk
+
+      - name: Configure Vulkan environment
+        shell: bash
+        run: |
+          echo "VULKAN_SDK=$(brew --prefix)" >> "$GITHUB_ENV"
+          echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Vulkan tools
+        shell: bash
+        run: |
+          which glslangValidator
+          which vulkaninfo || true
+          test -f "$(brew --prefix)/include/vulkan/vulkan.h"
+
+      - name: Configure CMake
+        shell: bash
+        run: cmake -S "${{ github.workspace }}" -B "${{ github.workspace }}/build" -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        shell: bash
+        run: cmake --build "${{ github.workspace }}/build" --parallel
