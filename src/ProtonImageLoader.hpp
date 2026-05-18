@@ -4,10 +4,8 @@
 #include <string>
 #include <vector>
 
-namespace Proton
-{
-    struct ImageData
-    {
+namespace Proton {
+    struct ImageData {
         int Width = 0;
         int Height = 0;
         int Channels = 0;
@@ -15,17 +13,15 @@ namespace Proton
 
         std::vector<std::uint8_t> Pixels;
 
-        bool IsValid() const
-        {
+        bool IsValid() const {
             return Width > 0 &&
                    Height > 0 &&
                    !Pixels.empty();
         }
     };
 
-    class ImageLoader
-    {
+    class ImageLoader {
     public:
-        static ImageData Load(const std::string& path);
+        static ImageData Load(const std::string &path);
     };
 }

@@ -3,10 +3,8 @@
 #include <cstdint>
 #include <string>
 
-namespace Proton
-{
-    struct SystemStats
-    {
+namespace Proton {
+    struct SystemStats {
         double ProcessCpuPercent = 0.0;
 
         std::uint64_t WorkingSetBytes = 0;
@@ -18,12 +16,12 @@ namespace Proton
         std::uint32_t ThreadCount = 0;
     };
 
-    class SystemStatsSampler
-    {
+    class SystemStatsSampler {
     public:
         SystemStatsSampler();
 
         SystemStats Sample();
+
         static std::string FormatBytes(std::uint64_t bytes);
 
     private:

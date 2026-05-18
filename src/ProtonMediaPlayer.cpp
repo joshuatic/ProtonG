@@ -23,10 +23,8 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include <miniaudio.h>
 
-namespace Proton
-{
-    struct MediaPlayer::Impl
-    {
+namespace Proton {
+    struct MediaPlayer::Impl {
         ma_decoder Decoder{};
         ma_device Device{};
 
@@ -42,12 +40,11 @@ namespace Proton
         double LeadingSilenceSeconds = 0.0;
     };
 
-    struct MediaPlayerAudioCallbackAccess
-    {
+    struct MediaPlayerAudioCallbackAccess {
         using Impl = MediaPlayer::Impl;
     };
 
-    static double DetectLeadingSilenceSeconds(const std::string& audioPath) {
+    static double DetectLeadingSilenceSeconds(const std::string &audioPath) {
         ma_decoder_config decoderConfig =
                 ma_decoder_config_init(ma_format_f32, 0, 0);
 
@@ -136,25 +133,23 @@ namespace Proton
     }
 
     static void MediaAudioCallbackImpl(
-        ma_device* device,
-        void* output,
-        const void*,
+        ma_device *device,
+        void *output,
+        const void *,
         ma_uint32 frameCount
-    )
-    {
-        auto* impl =
-            static_cast<MediaPlayerAudioCallbackAccess::Impl*>(device->pUserData);
+    ) {
+        auto *impl =
+                static_cast<MediaPlayerAudioCallbackAccess::Impl *>(device->pUserData);
 
         const ma_uint32 channels = device->playback.channels;
         const ma_format format = device->playback.format;
 
         const std::size_t outputByteCount =
-            static_cast<std::size_t>(frameCount) *
-            channels *
-            ma_get_bytes_per_sample(format);
+                static_cast<std::size_t>(frameCount) *
+                channels *
+                ma_get_bytes_per_sample(format);
 
-        if (impl == nullptr || !impl->DecoderInitialized)
-        {
+        if (impl == nullptr || !impl->DecoderInitialized) {
             std::memset(output, 0, outputByteCount);
             return;
         }
@@ -168,25 +163,23 @@ namespace Proton
             &framesRead
         );
 
-        if (readResult != MA_SUCCESS)
-        {
+        if (readResult != MA_SUCCESS) {
             std::memset(output, 0, outputByteCount);
             impl->AudioFinished.store(true, std::memory_order_relaxed);
             return;
         }
 
-        if (framesRead < frameCount)
-        {
+        if (framesRead < frameCount) {
             const std::size_t bytesPerFrame =
-                static_cast<std::size_t>(channels) *
-                ma_get_bytes_per_sample(format);
+                    static_cast<std::size_t>(channels) *
+                    ma_get_bytes_per_sample(format);
 
             const std::size_t validByteCount =
-                static_cast<std::size_t>(framesRead) *
-                bytesPerFrame;
+                    static_cast<std::size_t>(framesRead) *
+                    bytesPerFrame;
 
             std::memset(
-                static_cast<std::uint8_t*>(output) + validByteCount,
+                static_cast<std::uint8_t *>(output) + validByteCount,
                 0,
                 outputByteCount - validByteCount
             );
@@ -210,57 +203,47 @@ namespace Proton
     }
 
     MediaPlayer::MediaPlayer()
-        : m_Impl(std::make_unique<Impl>())
-    {
+        : m_Impl(std::make_unique<Impl>()) {
     }
 
-    MediaPlayer::~MediaPlayer()
-    {
+    MediaPlayer::~MediaPlayer() {
         Stop();
     }
 
-    void MediaPlayer::Attach(VulkanContext* vulkanContext)
-    {
+    void MediaPlayer::Attach(VulkanContext *vulkanContext) {
         m_VulkanContext = vulkanContext;
     }
 
-    bool MediaPlayer::PlayImageSequence(const ImageSequencePlaybackConfig& config)
-    {
-        if (m_VulkanContext == nullptr)
-        {
+    bool MediaPlayer::PlayImageSequence(const ImageSequencePlaybackConfig &config) {
+        if (m_VulkanContext == nullptr) {
             Log::Error("Cannot play media because VulkanContext is null.");
             return false;
         }
 
-        if (config.FramePattern.empty())
-        {
+        if (config.FramePattern.empty()) {
             Log::Error("Cannot play media because frame pattern is empty.");
             return false;
         }
 
-        if (config.AudioPath.empty())
-        {
+        if (config.AudioPath.empty()) {
             Log::Error("Cannot play media because audio path is empty.");
             return false;
         }
 
-        if (config.FirstFrame > config.LastFrame)
-        {
+        if (config.FirstFrame > config.LastFrame) {
             Log::Error("Cannot play media because firstFrame is greater than lastFrame.");
             return false;
         }
 
-        if (config.Fps <= 0.0)
-        {
+        if (config.Fps <= 0.0) {
             Log::Error("Cannot play media because FPS must be greater than zero.");
             return false;
         }
 
         const std::filesystem::path absoluteAudioPath =
-            std::filesystem::absolute(config.AudioPath);
+                std::filesystem::absolute(config.AudioPath);
 
-        if (!std::filesystem::exists(absoluteAudioPath))
-        {
+        if (!std::filesystem::exists(absoluteAudioPath)) {
             Log::Error(std::format(
                 "MediaPlayer audio file does not exist: {}",
                 absoluteAudioPath.string()
@@ -283,7 +266,7 @@ namespace Proton
         m_Impl->Channels = 0;
 
         m_Impl->LeadingSilenceSeconds =
-            DetectLeadingSilenceSeconds(absoluteAudioPath.string());
+                DetectLeadingSilenceSeconds(absoluteAudioPath.string());
 
         Log::Info(std::format(
             "MediaPlayer audio leading silence detected: {:.3f} seconds.",
@@ -300,11 +283,11 @@ namespace Proton
         RenderFrameIfNeeded(m_Config.FirstFrame);
 
         ma_decoder_config decoderConfig =
-            ma_decoder_config_init(
-                ma_format_f32,
-                0,
-                0
-            );
+                ma_decoder_config_init(
+                    ma_format_f32,
+                    0,
+                    0
+                );
 
         const ma_result decoderResult = ma_decoder_init_file(
             absoluteAudioPath.string().c_str(),
@@ -312,8 +295,7 @@ namespace Proton
             &m_Impl->Decoder
         );
 
-        if (decoderResult != MA_SUCCESS)
-        {
+        if (decoderResult != MA_SUCCESS) {
             Log::Error(std::format(
                 "MediaPlayer failed to initialize audio decoder: {} | miniaudio result={}",
                 absoluteAudioPath.string(),
@@ -328,8 +310,7 @@ namespace Proton
         m_Impl->SampleRate = m_Impl->Decoder.outputSampleRate;
         m_Impl->Channels = m_Impl->Decoder.outputChannels;
 
-        if (m_Impl->SampleRate == 0 || m_Impl->Channels == 0)
-        {
+        if (m_Impl->SampleRate == 0 || m_Impl->Channels == 0) {
             Log::Error("MediaPlayer audio decoder returned invalid sample rate or channel count.");
 
             Stop();
@@ -338,7 +319,7 @@ namespace Proton
         }
 
         ma_device_config deviceConfig =
-            ma_device_config_init(ma_device_type_playback);
+                ma_device_config_init(ma_device_type_playback);
 
         deviceConfig.playback.format = ma_format_f32;
         deviceConfig.playback.channels = m_Impl->Channels;
@@ -362,8 +343,7 @@ namespace Proton
             &m_Impl->Device
         );
 
-        if (deviceResult != MA_SUCCESS)
-        {
+        if (deviceResult != MA_SUCCESS) {
             Log::Error(std::format(
                 "MediaPlayer failed to initialize audio device. miniaudio result={}",
                 static_cast<int>(deviceResult)
@@ -377,10 +357,9 @@ namespace Proton
         m_Impl->DeviceInitialized = true;
 
         const ma_result startResult =
-            ma_device_start(&m_Impl->Device);
+                ma_device_start(&m_Impl->Device);
 
-        if (startResult != MA_SUCCESS)
-        {
+        if (startResult != MA_SUCCESS) {
             Log::Error(std::format(
                 "MediaPlayer failed to start audio device. miniaudio result={}",
                 static_cast<int>(startResult)
@@ -407,25 +386,21 @@ namespace Proton
         return true;
     }
 
-    void MediaPlayer::Stop()
-    {
-        if (m_Impl == nullptr)
-        {
+    void MediaPlayer::Stop() {
+        if (m_Impl == nullptr) {
             m_State = MediaPlaybackState::Idle;
             m_Playing = false;
             m_LastRenderedFrame = -1;
             return;
         }
 
-        if (m_Impl->DeviceInitialized)
-        {
+        if (m_Impl->DeviceInitialized) {
             ma_device_stop(&m_Impl->Device);
             ma_device_uninit(&m_Impl->Device);
             m_Impl->DeviceInitialized = false;
         }
 
-        if (m_Impl->DecoderInitialized)
-        {
+        if (m_Impl->DecoderInitialized) {
             ma_decoder_uninit(&m_Impl->Decoder);
             m_Impl->DecoderInitialized = false;
         }
@@ -441,20 +416,17 @@ namespace Proton
         m_LastRenderedFrame = -1;
     }
 
-    void MediaPlayer::Update(double)
-    {
-        if (!m_Playing || m_State != MediaPlaybackState::Playing)
-        {
+    void MediaPlayer::Update(double) {
+        if (!m_Playing || m_State != MediaPlaybackState::Playing) {
             return;
         }
 
-        if (m_Impl == nullptr || m_Impl->SampleRate == 0)
-        {
+        if (m_Impl == nullptr || m_Impl->SampleRate == 0) {
             return;
         }
 
         const std::uint64_t submittedFrames =
-            m_Impl->SubmittedFrames.load(std::memory_order_relaxed);
+                m_Impl->SubmittedFrames.load(std::memory_order_relaxed);
 
         /*
             Wait until the audio callback actually submits audio frames.
@@ -464,22 +436,20 @@ namespace Proton
             - video starts advancing immediately
             - speaker output lags behind
         */
-        if (submittedFrames == 0)
-        {
+        if (submittedFrames == 0) {
             return;
         }
 
         const double audioTimeSeconds =
-            static_cast<double>(submittedFrames) /
-            static_cast<double>(m_Impl->SampleRate);
+                static_cast<double>(submittedFrames) /
+                static_cast<double>(m_Impl->SampleRate);
 
         static int lastLoggedSecond = -1;
 
         const int currentSecond =
-            static_cast<int>(audioTimeSeconds);
+                static_cast<int>(audioTimeSeconds);
 
-        if (currentSecond != lastLoggedSecond)
-        {
+        if (currentSecond != lastLoggedSecond) {
             lastLoggedSecond = currentSecond;
 
             Log::Info(std::format(
@@ -492,13 +462,12 @@ namespace Proton
         }
 
         const int frame =
-            CalculateFrameFromAudioTime(audioTimeSeconds);
+                CalculateFrameFromAudioTime(audioTimeSeconds);
 
         RenderFrameIfNeeded(frame);
 
         if (m_Impl->AudioFinished.load(std::memory_order_relaxed) &&
-            frame >= m_Config.LastFrame)
-        {
+            frame >= m_Config.LastFrame) {
             m_State = MediaPlaybackState::Finished;
             m_Playing = false;
 
@@ -506,18 +475,15 @@ namespace Proton
         }
     }
 
-    bool MediaPlayer::IsPlaying() const
-    {
+    bool MediaPlayer::IsPlaying() const {
         return m_Playing;
     }
 
-    MediaPlaybackState MediaPlayer::GetState() const
-    {
+    MediaPlaybackState MediaPlayer::GetState() const {
         return m_State;
     }
 
-    std::string MediaPlayer::BuildFramePath(int frame) const
-    {
+    std::string MediaPlayer::BuildFramePath(int frame) const {
         std::vector<char> buffer(1024);
 
         int written = std::snprintf(
@@ -527,13 +493,11 @@ namespace Proton
             frame
         );
 
-        if (written <= 0)
-        {
+        if (written <= 0) {
             return {};
         }
 
-        if (static_cast<std::size_t>(written) >= buffer.size())
-        {
+        if (static_cast<std::size_t>(written) >= buffer.size()) {
             buffer.resize(static_cast<std::size_t>(written) + 1);
 
             written = std::snprintf(
@@ -543,8 +507,7 @@ namespace Proton
                 frame
             );
 
-            if (written <= 0)
-            {
+            if (written <= 0) {
                 return {};
             }
         }
@@ -552,11 +515,10 @@ namespace Proton
         return std::string(buffer.data());
     }
 
-    int MediaPlayer::CalculateFrameFromAudioTime(double audioTimeSeconds) const
-    {
+    int MediaPlayer::CalculateFrameFromAudioTime(double audioTimeSeconds) const {
         const int frame =
-            m_Config.FirstFrame +
-            static_cast<int>(audioTimeSeconds * m_Config.Fps);
+                m_Config.FirstFrame +
+                static_cast<int>(audioTimeSeconds * m_Config.Fps);
 
         return std::clamp(
             frame,
@@ -565,27 +527,23 @@ namespace Proton
         );
     }
 
-    void MediaPlayer::RenderFrameIfNeeded(int frame)
-    {
-        if (frame == m_LastRenderedFrame)
-        {
+    void MediaPlayer::RenderFrameIfNeeded(int frame) {
+        if (frame == m_LastRenderedFrame) {
             return;
         }
 
         const std::string framePath =
-            BuildFramePath(frame);
+                BuildFramePath(frame);
 
-        if (framePath.empty())
-        {
+        if (framePath.empty()) {
             Log::Error("MediaPlayer failed to build frame path.");
             return;
         }
 
         const ImageData image =
-            ImageLoader::Load(framePath);
+                ImageLoader::Load(framePath);
 
-        if (!image.IsValid())
-        {
+        if (!image.IsValid()) {
             Log::Error(std::format(
                 "MediaPlayer failed to load frame {}: {}",
                 frame,
@@ -595,8 +553,7 @@ namespace Proton
             return;
         }
 
-        if (!m_VulkanContext->SetTextureFromImage(image))
-        {
+        if (!m_VulkanContext->SetTextureFromImage(image)) {
             Log::Error(std::format(
                 "MediaPlayer failed to upload frame {} to Vulkan.",
                 frame

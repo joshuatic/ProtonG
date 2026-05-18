@@ -4,10 +4,8 @@
 #include <format>
 #include <iostream>
 
-namespace Proton
-{
-    static std::string GetCurrentTimeString()
-    {
+namespace Proton {
+    static std::string GetCurrentTimeString() {
         const auto now = std::chrono::system_clock::now();
         const auto rawTime = std::chrono::system_clock::to_time_t(now);
 
@@ -27,30 +25,26 @@ namespace Proton
         );
     }
 
-    void Log::Info(std::string_view message)
-    {
+    void Log::Info(std::string_view message) {
         Write("INFO", message);
     }
 
-    void Log::Warn(std::string_view message)
-    {
+    void Log::Warn(std::string_view message) {
         Write("WARN", message);
     }
 
-    void Log::Error(std::string_view message)
-    {
+    void Log::Error(std::string_view message) {
         Write("ERROR", message);
     }
 
-    void Log::Write(std::string_view level, std::string_view message)
-    {
+    void Log::Write(std::string_view level, std::string_view message) {
         std::cout
-            << "["
-            << GetCurrentTimeString()
-            << "] ["
-            << level
-            << "] "
-            << message
-            << '\n';
+                << "["
+                << GetCurrentTimeString()
+                << "] ["
+                << level
+                << "] "
+                << message
+                << '\n';
     }
 }

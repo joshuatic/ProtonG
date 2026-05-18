@@ -8,3 +8,5 @@ Recommended structure:
   - `audio/`: Audio files
 - `fonts/`: UI fonts
 - `textures/`: Global textures
+
+Then, reference the assets in your `luau` file

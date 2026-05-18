@@ -1,7 +1,6 @@
 #include "ProtonApplication.hpp"
 
-int main()
-{
+int main() {
     Proton::ApplicationConfig config;
     config.Name = "Proton G Sandbox";
     config.Width = 1280;

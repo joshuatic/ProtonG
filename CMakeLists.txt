@@ -36,6 +36,10 @@ add_executable(ProtonG
         src/ProtonScriptEngine.cpp
         src/ProtonImageLoader.cpp
         src/ProtonMediaPlayer.cpp
+        src/ProtonInput.cpp
+        src/ProtonDraw2D.cpp
+        src/ProtonSpriteManager.cpp
+        src/ProtonObjectManager.cpp
 )
 
 add_custom_command(

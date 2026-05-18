@@ -8,12 +8,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-namespace Proton
-{
-    ImageData ImageLoader::Load(const std::string& path)
-    {
+namespace Proton {
+    ImageData ImageLoader::Load(const std::string &path) {
         const std::filesystem::path absolutePath =
-            std::filesystem::absolute(path);
+                std::filesystem::absolute(path);
 
         Log::Info(std::format(
             "Loading image from: {}",
@@ -30,7 +28,7 @@ namespace Proton
 
         stbi_set_flip_vertically_on_load(true);
 
-        stbi_uc* pixels = stbi_load(
+        stbi_uc *pixels = stbi_load(
             absolutePath.string().c_str(),
             &width,
             &height,
@@ -38,8 +36,7 @@ namespace Proton
             desiredChannels
         );
 
-        if (pixels == nullptr)
-        {
+        if (pixels == nullptr) {
             Log::Error(std::format(
                 "Failed to load image: {}",
                 absolutePath.string()
@@ -49,9 +46,9 @@ namespace Proton
         }
 
         const std::size_t pixelCount =
-            static_cast<std::size_t>(width) *
-            static_cast<std::size_t>(height) *
-            static_cast<std::size_t>(desiredChannels);
+                static_cast<std::size_t>(width) *
+                static_cast<std::size_t>(height) *
+                static_cast<std::size_t>(desiredChannels);
 
         image.Width = width;
         image.Height = height;

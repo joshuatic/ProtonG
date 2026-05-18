@@ -5,12 +5,10 @@
 #include <memory>
 #include <string>
 
-namespace Proton
-{
+namespace Proton {
     struct MediaPlayerAudioCallbackAccess;
 
-    struct ImageSequencePlaybackConfig
-    {
+    struct ImageSequencePlaybackConfig {
         std::string FramePattern;
         std::string AudioPath;
 
@@ -19,8 +17,7 @@ namespace Proton
         double Fps = 30.0;
     };
 
-    enum class MediaPlaybackState
-    {
+    enum class MediaPlaybackState {
         Idle,
         Preparing,
         Playing,
@@ -28,23 +25,26 @@ namespace Proton
         Failed
     };
 
-    class MediaPlayer
-    {
+    class MediaPlayer {
     public:
         MediaPlayer();
+
         ~MediaPlayer();
 
-        MediaPlayer(const MediaPlayer&) = delete;
-        MediaPlayer& operator=(const MediaPlayer&) = delete;
+        MediaPlayer(const MediaPlayer &) = delete;
 
-        void Attach(VulkanContext* vulkanContext);
+        MediaPlayer &operator=(const MediaPlayer &) = delete;
 
-        bool PlayImageSequence(const ImageSequencePlaybackConfig& config);
+        void Attach(VulkanContext *vulkanContext);
+
+        bool PlayImageSequence(const ImageSequencePlaybackConfig &config);
+
         void Stop();
 
         void Update(double deltaTime);
 
         bool IsPlaying() const;
+
         MediaPlaybackState GetState() const;
 
     private:
@@ -53,11 +53,13 @@ namespace Proton
         struct Impl;
 
         std::string BuildFramePath(int frame) const;
+
         int CalculateFrameFromAudioTime(double audioTimeSeconds) const;
+
         void RenderFrameIfNeeded(int frame);
 
     private:
-        VulkanContext* m_VulkanContext = nullptr;
+        VulkanContext *m_VulkanContext = nullptr;
 
         ImageSequencePlaybackConfig m_Config{};
 

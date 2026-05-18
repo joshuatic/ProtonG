@@ -8,35 +8,31 @@
 
 #include <format>
 
-namespace Proton
-{
+namespace Proton {
 #ifdef _WIN32
-    static std::uint64_t FileTimeToUInt64(const FILETIME& fileTime)
-    {
+    static std::uint64_t FileTimeToUInt64(const FILETIME &fileTime) {
         ULARGE_INTEGER value{};
         value.LowPart = fileTime.dwLowDateTime;
         value.HighPart = fileTime.dwHighDateTime;
         return value.QuadPart;
     }
 
-    static std::uint64_t GetWallTime100ns()
-    {
+    static std::uint64_t GetWallTime100ns() {
         FILETIME fileTime{};
         GetSystemTimeAsFileTime(&fileTime);
         return FileTimeToUInt64(fileTime);
     }
 #endif
 
-    SystemStatsSampler::SystemStatsSampler()
-    {
+    SystemStatsSampler::SystemStatsSampler() {
 #ifdef _WIN32
         SYSTEM_INFO systemInfo{};
         GetSystemInfo(&systemInfo);
 
         m_LogicalProcessorCount =
-            systemInfo.dwNumberOfProcessors == 0
-                ? 1
-                : systemInfo.dwNumberOfProcessors;
+                systemInfo.dwNumberOfProcessors == 0
+                    ? 1
+                    : systemInfo.dwNumberOfProcessors;
 
         FILETIME creationTime{};
         FILETIME exitTime{};
@@ -52,14 +48,13 @@ namespace Proton
         );
 
         m_LastProcessTime100ns =
-            FileTimeToUInt64(kernelTime) + FileTimeToUInt64(userTime);
+                FileTimeToUInt64(kernelTime) + FileTimeToUInt64(userTime);
 
         m_LastWallTime100ns = GetWallTime100ns();
 #endif
     }
 
-    SystemStats SystemStatsSampler::Sample()
-    {
+    SystemStats SystemStatsSampler::Sample() {
         SystemStats stats{};
 
 #ifdef _WIN32
@@ -70,21 +65,19 @@ namespace Proton
 
         if (GetProcessMemoryInfo(
             process,
-            reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&memoryCounters),
-            sizeof(memoryCounters)))
-        {
+            reinterpret_cast<PROCESS_MEMORY_COUNTERS *>(&memoryCounters),
+            sizeof(memoryCounters))) {
             stats.WorkingSetBytes =
-                static_cast<std::uint64_t>(memoryCounters.WorkingSetSize);
+                    static_cast<std::uint64_t>(memoryCounters.WorkingSetSize);
 
             stats.PrivateBytes =
-                static_cast<std::uint64_t>(memoryCounters.PrivateUsage);
+                    static_cast<std::uint64_t>(memoryCounters.PrivateUsage);
         }
 
         MEMORYSTATUSEX memoryStatus{};
         memoryStatus.dwLength = sizeof(memoryStatus);
 
-        if (GlobalMemoryStatusEx(&memoryStatus))
-        {
+        if (GlobalMemoryStatusEx(&memoryStatus)) {
             stats.TotalPhysicalMemoryBytes = memoryStatus.ullTotalPhys;
             stats.AvailablePhysicalMemoryBytes = memoryStatus.ullAvailPhys;
         }
@@ -99,26 +92,24 @@ namespace Proton
             &creationTime,
             &exitTime,
             &kernelTime,
-            &userTime))
-        {
+            &userTime)) {
             const std::uint64_t processTime100ns =
-                FileTimeToUInt64(kernelTime) + FileTimeToUInt64(userTime);
+                    FileTimeToUInt64(kernelTime) + FileTimeToUInt64(userTime);
 
             const std::uint64_t wallTime100ns = GetWallTime100ns();
 
             const std::uint64_t processDelta =
-                processTime100ns - m_LastProcessTime100ns;
+                    processTime100ns - m_LastProcessTime100ns;
 
             const std::uint64_t wallDelta =
-                wallTime100ns - m_LastWallTime100ns;
+                    wallTime100ns - m_LastWallTime100ns;
 
-            if (wallDelta > 0)
-            {
+            if (wallDelta > 0) {
                 stats.ProcessCpuPercent =
-                    (static_cast<double>(processDelta) /
-                     static_cast<double>(wallDelta)) *
-                    100.0 /
-                    static_cast<double>(m_LogicalProcessorCount);
+                        (static_cast<double>(processDelta) /
+                         static_cast<double>(wallDelta)) *
+                        100.0 /
+                        static_cast<double>(m_LogicalProcessorCount);
             }
 
             m_LastProcessTime100ns = processTime100ns;
@@ -134,26 +125,22 @@ namespace Proton
         return stats;
     }
 
-    std::string SystemStatsSampler::FormatBytes(std::uint64_t bytes)
-    {
+    std::string SystemStatsSampler::FormatBytes(std::uint64_t bytes) {
         constexpr double KiB = 1024.0;
         constexpr double MiB = KiB * 1024.0;
         constexpr double GiB = MiB * 1024.0;
 
         const double value = static_cast<double>(bytes);
 
-        if (value >= GiB)
-        {
+        if (value >= GiB) {
             return std::format("{:.2f} GiB", value / GiB);
         }
 
-        if (value >= MiB)
-        {
+        if (value >= MiB) {
             return std::format("{:.2f} MiB", value / MiB);
         }
 
-        if (value >= KiB)
-        {
+        if (value >= KiB) {
             return std::format("{:.2f} KiB", value / KiB);
         }
 
