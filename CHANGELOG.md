@@ -201,3 +201,5 @@ vMAJOR.MINOR
 - Removed the old separate-only render ordering model in favor of a unified render queue.
 - Removed temporary debug assumptions around sprite UV orientation.
 - Removed temporary sprite batching/render queue debug logs after validation.
+
+---

@@ -117,21 +117,60 @@ v0.02 started as a basic 2D runtime milestone, but it now includes enough functi
 
 ---
 
-## v0.03 – Scene Runtime
+## v0.03 – Runtime Polish + Object System
 
 **Status:** Planned
 
-Goal: move from one-off rendering into a basic scene/object model.
+Goal: polish the v0.02 runtime into a cleaner scripting foundation for actual small games and demos.
 
-- [ ] Scene object registry
-- [ ] Object handles exposed to Luau
-- [ ] Basic transform components
-- [ ] Simple camera
-- [ ] Asset manager
-- [ ] Multiple sprites on screen
-- [ ] Runtime object creation from Luau
-- [ ] Runtime object deletion from Luau
-- [ ] Better logging for script/runtime errors
+### Planned
+- [ ] Object rotation
+    - [ ] `proton.object.setRotation`
+    - [ ] `proton.object.getRotation`
+- [ ] Object visibility
+    - [ ] `proton.object.setVisible`
+    - [ ] `proton.object.isVisible`
+- [ ] Object lifetime helpers
+    - [ ] `proton.object.destroy`
+    - [ ] `proton.object.exists`
+- [ ] Object movement helpers
+    - [ ] `proton.object.move`
+    - [ ] `proton.object.moveX`
+    - [ ] `proton.object.moveY`
+- [ ] Object center helpers
+    - [ ] `proton.object.getCenterX`
+    - [ ] `proton.object.getCenterY`
+    - [ ] `proton.object.setCenter`
+- [ ] Object-aware collision helpers
+    - [ ] `proton.collision.objectsOverlap`
+    - [ ] `proton.collision.objectRectOverlap`
+- [ ] Point-in-rectangle collision helper
+    - [ ] `proton.collision.pointInRect`
+- [ ] Better debug/log toggles
+    - [ ] Draw logging toggle
+    - [ ] Input logging toggle
+    - [ ] Renderer logging toggle
+- [ ] Cleaner sandbox example organization
+    - [ ] Shape example
+    - [ ] Sprite example
+    - [ ] Object example
+    - [ ] Collision example
+    - [ ] Platformer/demo example
+- [ ] Basic asset handle polish
+- [ ] First real mini 2D demo scene
+
+### Stretch Goals
+- [ ] Simple scene/demo selector
+- [ ] More sprite batching improvements
+- [ ] Object tags or groups
+- [ ] Basic timer helpers
+- [ ] Basic camera offset
+- [ ] Object rotation-aware sprite helpers
+- [ ] Cleaner runtime config file
+
+### Notes
+
+v0.03 should avoid becoming another giant renderer war. v0.02 proved the renderer and scripting bridge can work. v0.03 should make the API cleaner, reduce Luau boilerplate, improve object ergonomics, and make Proton G easier to build actual small scenes with.
 
 ---
 
