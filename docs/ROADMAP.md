@@ -43,22 +43,77 @@ Goal: prove that Proton G can boot, load scripts, display images, and support ba
 
 ## v0.02 – Basic 2D Runtime
 
-**Status:** Planned
+**Status:** Feature-complete / final validation
 
-Goal: add enough 2D functionality to make simple interactive scenes from Luau.
+Goal: add enough 2D runtime functionality to build simple interactive scenes from Luau, including input, immediate-mode rendering, sprites, object handles, collision helpers, batching, and shared render ordering.
 
-- [ ] Keyboard input
-- [ ] Mouse input
-- [ ] Luau input API
-- [ ] Basic sprite rendering
-- [ ] Sprite position
-- [ ] Sprite scale
-- [ ] Sprite rotation
-- [ ] Sprite draw order
-- [ ] Multiple image assets
-- [ ] Basic asset handles
-- [ ] Clearer runtime object ownership
-- [ ] Simple 2D demo scene
+### Completed
+- [x] Keyboard input
+- [x] Mouse input
+- [x] Mouse position exposed to Luau
+- [x] Basic Luau input API
+- [x] Window size API
+- [x] Runtime window title API
+- [x] Runtime debug title mode
+- [x] Basic rectangle rendering
+- [x] Basic polygon rendering
+- [x] Basic circle rendering
+- [x] Immediate-mode 2D draw API
+    - [x] `proton.draw.rect`
+    - [x] `proton.draw.polygon`
+    - [x] `proton.draw.circle`
+- [x] Sprite manager
+- [x] Sprite loading API
+    - [x] `proton.sprite.load`
+- [x] Sprite handles
+- [x] Sprite drawing API
+    - [x] `proton.sprite.draw`
+- [x] Sprite properties
+    - [x] Sprite position
+    - [x] Sprite scale/size
+    - [x] Sprite rotation
+    - [x] Sprite tint/color
+    - [x] Sprite alpha
+- [x] Multiple image assets
+- [x] Sprite CPU image data storage
+- [x] Sprite GPU texture upload
+- [x] Sprite texture cache by handle
+- [x] Textured quad rendering
+- [x] Sprite UV orientation cleanup
+- [x] Basic draw ordering/layers
+- [x] Cross-renderer layer ordering
+- [x] Unified cross-renderer render queue
+- [x] Consecutive same-texture sprite batching
+- [x] Simple runtime object handles
+    - [x] `proton.object.create`
+    - [x] `proton.object.setPosition`
+    - [x] `proton.object.setSize`
+    - [x] `proton.object.getX`
+    - [x] `proton.object.getY`
+    - [x] `proton.object.getWidth`
+    - [x] `proton.object.getHeight`
+- [x] Relative sprite drawing helper
+    - [x] `proton.sprite.drawOn`
+- [x] Object-aware sprite helpers
+    - [x] `proton.sprite.drawObject`
+    - [x] `proton.sprite.drawOnObject`
+- [x] Basic collision helpers
+    - [x] `proton.collision.rectsOverlap`
+- [x] Luau-driven gameplay test
+    - [x] Jump physics test
+    - [x] Ground collision test
+- [x] Final v0.02 sanity test scene
+- [x] CI documentation/update work
+- [x] Final cleanup before tagging
+    - [x] Remove temporary local test spam from sandbox script if desired
+    - [x] Confirm no render queue / batching debug spam remains
+    - [x] Confirm CI passes on Ubuntu and Windows
+    - [x] Push final v0.02 docs and workflow fixes
+    - [x] Tag or mark v0.02 as complete
+
+### Notes
+
+v0.02 started as a basic 2D runtime milestone, but it now includes enough functionality to behave like a small Luau-driven 2D engine slice. The runtime can render shapes and sprites, load multiple textures, sort shapes and sprites together by layer, batch compatible sprite draws, create simple object handles, and run collision-driven gameplay tests.
 
 ---
 
